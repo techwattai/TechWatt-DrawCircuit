@@ -12,7 +12,7 @@ const Home = () => {
       {/* Example Modal */}
       {showExample && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in p-4" onClick={() => setShowExample(false)}>
-          <div className="relative max-w-5xl w-full bg-white rounded-xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="relative max-w-3xl w-full bg-white rounded-xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
             <button 
               onClick={() => setShowExample(false)}
               className="absolute top-4 right-4 bg-white/90 p-2 rounded-full hover:bg-white text-gray-800 transition-colors z-10"
@@ -69,7 +69,7 @@ const Home = () => {
           </button>
         </div>
         
-        {/* Abstract Floating UI Elements */} // ... existing code ...
+        {/* Abstract Floating UI Elements */}
         <div className="mt-20 relative">
           <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-10"></div>
           <div className="bg-gray-900 rounded-2xl p-2 shadow-2xl border border-gray-800 max-w-5xl mx-auto transform rotate-1 hover:rotate-0 transition-transform duration-700">
