@@ -15,8 +15,12 @@ import axios from 'axios';
 import { Download, Cpu, Loader2, Zap } from 'lucide-react';
 import * as htmlToImage from 'html-to-image';
 
-// API Base URL - uses relative path in production, localhost in development
-const API_BASE_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8000/api';
+// API Base URL
+// In development: use local proxy (starts with /api)
+// In production: use VITE_API_URL environment variable + /api
+const API_BASE_URL = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
 
 // Wire color mapping
 const WIRE_COLORS = {
