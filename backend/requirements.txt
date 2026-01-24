@@ -3,3 +3,10 @@ uvicorn
 openai
 python-dotenv
 pydantic
+databases[postgresql]
+sqlalchemy
+asyncpg
+psycopg2-binary
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart

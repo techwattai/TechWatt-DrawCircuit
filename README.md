@@ -1,92 +1,84 @@
-# TechWatt Circuit AI
+# TechWatt Circuit AI ⚡
 
-AI-powered wiring diagram generator. Describe your circuit and get an interactive diagram with pin-to-pin connections.
+**Design Circuits at the Speed of Thought.**
 
-## Features
+TechWatt Circuit AI is an intelligent engineering assistant that transforms text descriptions into professional wiring diagrams, firmware code, and bill of materials (BOM).
 
-- 🤖 AI-powered circuit diagram generation
-- 🔌 Pin-to-pin wiring visualization
-- 🎨 Color-coded wires (power, ground, signals)
-- 📤 Export diagrams as PNG
-- 🖱️ Interactive drag-and-drop
+![TechWatt Circuit AI](https://via.placeholder.com/1200x600?text=TechWatt+Hero+Image) 
+*(Note: Replace with actual screenshot)*
 
-## Tech Stack
+## 🚀 Features
 
-- **Frontend:** React, Vite, TailwindCSS, ReactFlow
-- **Backend:** Python, FastAPI, OpenAI API
+### 1. Intelligent Diagrams
+Describe any circuit (e.g., *"Arduino with HC-SR04 and a servo motor"*), and the AI generates a clear, pin-to-pin wiring diagram.
+- **Microcontrollers**: Arduino, ESP32, Raspbery Pi, etc.
+- **Smart Wiring**: Auto-routes connections with industry-standard colors (Red=VCC, Black=GND).
 
-## Local Development
+### 2. Auto-Generated Code 💻
+Get production-ready firmware instantly.
+- **C++**: For Arduino/ESP platforms.
+- **Python**: For Raspberry Pi/Pico.
+- **Comments**: Detailed explanation of logic.
 
-### Prerequisites
-- Node.js 18+
-- Python 3.9+
-- OpenAI API key
+### 3. Instant BOM & Cost Estimation 💰
+Know the price before you build.
+- **Real-time Estimation**: Checks current online market rates.
+- **Sourcing**: Suggests where to buy components.
 
-### Backend Setup
+### 4. Cloud Saving & History ☁️
+- **User Accounts**: Sign up to save your work.
+- **Shareable Links**: Send your design to a friend or colleague with a single URL.
+- **Version History**: Access your past designs anytime.
 
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+## 🛠️ Tech Stack
 
-# Create .env file
-echo "OPENAI_API_KEY=your-api-key-here" > .env
+**Frontend**
+- React + Vite
+- TailwindCSS (Styling)
+- React Flow (Diagrams)
+- Framer Motion (Animations)
 
-# Run server
-uvicorn main:app --reload
-```
+**Backend**
+- Python FastAPI
+- PostgreSQL (Database)
+- OpenAI API (Intelligence)
+- SQLAlchemy (ORM)
 
-### Frontend Setup
+## 📦 Installation & Setup
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Tech-Watt/DrawCircuit.git
+   cd DrawCircuit
+   ```
 
-Open http://localhost:5173
+2. **Backend Setup**
+   ```bash
+   cd backend
+   python -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   
+   # .env file
+   OPENAI_API_KEY=your_key
+   DATABASE_URL=postgresql://user:pass@localhost:5432/db
+   SECRET_KEY=your_secret
+   ```
 
-## Deployment on Railway
+3. **Frontend Setup**
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
 
-### Option 1: Separate Services (Recommended)
+## 🚀 Deployment
 
-Deploy backend and frontend as separate Railway services:
+The project is configured for **Railway** deployment.
+- **Backend**: Deploys as a Python service.
+- **Frontend**: Deploys as a static site (using `serve`).
+- **Database**: Requires a PostgreSQL service attached.
 
-#### Backend Service
-1. Create new service from `backend` folder
-2. Set environment variables:
-   - `OPENAI_API_KEY` - Your OpenAI API key
-   - `FRONTEND_URL` - Your frontend URL (for CORS)
-3. Deploy
+## 📄 License
 
-#### Frontend Service
-1. Create new service from `frontend` folder
-2. Set environment variable:
-   - `VITE_API_URL` - Your backend URL
-3. Deploy
-
-### Option 2: Monorepo (Single Service)
-
-1. Build frontend: `cd frontend && npm run build`
-2. Copy `frontend/dist` to `backend/static`
-3. Deploy `backend` folder
-
-### Environment Variables
-
-**Backend:**
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `OPENAI_API_KEY` | OpenAI API key | Yes |
-| `OPENAI_MODEL` | Model name (default: gpt-4o) | No |
-| `FRONTEND_URL` | Frontend URL for CORS | Yes (production) |
-| `PORT` | Server port (auto-set by Railway) | No |
-
-**Frontend:**
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `VITE_API_URL` | Backend API URL | Yes (production) |
-
-## License
-
-MIT - TechWatt.ai
+MIT License - Created by TechWatt AI.
