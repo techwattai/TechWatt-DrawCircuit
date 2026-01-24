@@ -278,6 +278,7 @@ const CircuitMaker = () => {
 
   // Resizable Sidebar Logic
   const [sidebarWidth, setSidebarWidth] = useState(384); 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const isResizing = useRef(false);
 
   const startResizing = useCallback(() => { isResizing.current = true; }, []);
@@ -293,9 +294,12 @@ const CircuitMaker = () => {
   );
 
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
     window.addEventListener("mousemove", resize);
     window.addEventListener("mouseup", stopResizing);
     return () => {
+      window.removeEventListener('resize', handleResize);
       window.removeEventListener("mousemove", resize);
       window.removeEventListener("mouseup", stopResizing);
     };
@@ -308,7 +312,7 @@ const CircuitMaker = () => {
       {showHistory && (
           <div className="absolute inset-0 z-50 flex">
               <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowHistory(false)}></div>
-              <div className="relative w-80 bg-white shadow-2xl h-full ml-auto flex flex-col animate-in slide-in-from-right duration-200">
+              <div className="relative w-full md:w-80 bg-white shadow-2xl h-full ml-auto flex flex-col animate-in slide-in-from-right duration-200">
                   <div className="p-4 border-b flex justify-between items-center bg-gray-50">
                       <h3 className="font-bold text-gray-700 flex items-center gap-2"><Clock size={16}/> Recent Designs</h3>
                       <button onClick={() => setShowHistory(false)} className="hover:bg-gray-200 p-1 rounded-full"><X size={16}/></button>
@@ -341,51 +345,52 @@ const CircuitMaker = () => {
       )}
 
       {/* Header */}
-      <header className="bg-white border-b px-6 py-3 flex items-center justify-between shadow-sm z-20">
-        <div className="flex items-center gap-3">
+      <header className="bg-white border-b px-4 md:px-6 py-3 flex items-center justify-between shadow-sm z-20 overflow-x-auto">
+        <div className="flex items-center gap-3 shrink-0">
           <div className="bg-blue-600 p-2 rounded-lg text-white"><Zap size={24} /></div>
           <div>
-            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500">TechWatt Circuit AI</h1>
+            <h1 className="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500 hidden sm:block">TechWatt Circuit AI</h1>
+            <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500 sm:hidden">TechWatt</h1>
           </div>
         </div>
-        <div className="flex gap-2">
-            <button onClick={fetchHistory} className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg text-sm font-medium transition-colors border border-gray-200 mr-2">
-                <Clock size={16} /> Recent
+        <div className="flex gap-2 shrink-0">
+            <button onClick={fetchHistory} className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg text-sm font-medium transition-colors border border-gray-200 lg:mr-2">
+                <Clock size={16} /> <span className="hidden sm:inline">Recent</span>
             </button>
             
             {shareUrl && (
                 <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1 rounded text-sm border border-green-200">
-                    <Check size={14} /> Saved! 
-                    <button onClick={() => copyToClipboard(shareUrl)} className="underline font-semibold ml-1">Copy Link</button>
+                    <Check size={14} /> <span className="hidden sm:inline">Saved!</span> 
+                    <button onClick={() => copyToClipboard(shareUrl)} className="underline font-semibold ml-1">Copy<span className="hidden sm:inline"> Link</span></button>
                 </div>
             )}
-            <button onClick={handleSave} disabled={saving || !nodes.length} className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg text-sm font-medium transition-colors">
-                {saving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />} Save Publicly
+            <button onClick={handleSave} disabled={saving || !nodes.length} className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
+                {saving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />} <span className="hidden sm:inline">Save Publicly</span><span className="sm:hidden">Save</span>
             </button>
-            <button onClick={handleExport} disabled={nodes.length === 0} className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-gray-900/20">
-                <Download size={16} /> Export
+            <button onClick={handleExport} disabled={nodes.length === 0} className="flex items-center gap-2 px-3 md:px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-gray-900/20 whitespace-nowrap">
+                <Download size={16} /> <span className="hidden sm:inline">Export</span>
             </button>
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Resizable Sidebar */}
+      <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
+        {/* Resizable Sidebar - Collapsed on mobile to bottom or stacked */}
         <aside 
-            className="bg-white border-r flex flex-col z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)] relative shrink-0"
-            style={{ width: sidebarWidth }}
+            className="bg-white border-b md:border-b-0 md:border-r flex flex-col z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)] relative shrink-0 order-2 md:order-1 h-[40vh] md:h-auto"
+            style={{ width: isMobile ? '100%' : sidebarWidth }}
         >
-            {/* Drag Handle */}
+            {/* Drag Handle - Desktop Only */}
             <div
-                className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-400 active:bg-blue-600 transition-colors z-50"
+                className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-400 active:bg-blue-600 transition-colors z-50 hidden md:block"
                 onMouseDown={startResizing}
             />
 
-            <div className="p-5 border-b">
+            <div className="p-4 md:p-5 border-b">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Project Description</label>
                 <div className="relative">
                     <textarea
-                        className="w-full h-24 p-3 border border-gray-300 rounded-lg text-sm resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                        placeholder="e.g. Arduino UNO with HC-SR04 ultrasonic sensor and OLED display..."
+                        className="w-full h-16 md:h-24 p-3 border border-gray-300 rounded-lg text-sm resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        placeholder="e.g. Arduino UNO with HC-SR04..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleGenerate()}
@@ -402,19 +407,20 @@ const CircuitMaker = () => {
 
             {/* Feature Tabs */}
             <div className="flex border-b bg-gray-50">
-                <button onClick={() => setActiveTab('diagram')} className={`flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'diagram' ? 'border-blue-500 text-blue-600 bg-white' : 'border-transparent text-gray-500 hover:bg-gray-100'}`}>
-                    <LayoutTemplate size={16} /> Diagram
+                <button onClick={() => setActiveTab('diagram')} className={`flex-1 py-2 md:py-3 text-sm font-medium flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'diagram' ? 'border-blue-500 text-blue-600 bg-white' : 'border-transparent text-gray-500 hover:bg-gray-100'}`}>
+                    <LayoutTemplate size={16} /> <span className="hidden xs:inline">Diagram</span>
                 </button>
-                <button onClick={() => setActiveTab('code')} className={`flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'code' ? 'border-blue-500 text-blue-600 bg-white' : 'border-transparent text-gray-500 hover:bg-gray-100'}`}>
-                    <Code size={16} /> Code
+                <button onClick={() => setActiveTab('code')} className={`flex-1 py-2 md:py-3 text-sm font-medium flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'code' ? 'border-blue-500 text-blue-600 bg-white' : 'border-transparent text-gray-500 hover:bg-gray-100'}`}>
+                    <Code size={16} /> <span className="hidden xs:inline">Code</span>
                 </button>
-                <button onClick={() => setActiveTab('bom')} className={`flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'bom' ? 'border-blue-500 text-blue-600 bg-white' : 'border-transparent text-gray-500 hover:bg-gray-100'}`}>
-                    <FileText size={16} /> Cost
+                <button onClick={() => setActiveTab('bom')} className={`flex-1 py-2 md:py-3 text-sm font-medium flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'bom' ? 'border-blue-500 text-blue-600 bg-white' : 'border-transparent text-gray-500 hover:bg-gray-100'}`}>
+                    <FileText size={16} /> <span className="hidden xs:inline">Cost</span>
                 </button>
             </div>
 
             {/* Sidebar Content */}
-             <div className="flex-1 overflow-y-auto p-5 bg-gray-50/50">
+            <div className="flex-1 overflow-y-auto p-4 md:p-5 bg-gray-50/50">
+                {/* ... (Existing Content Panels - no changes needed internally) ... */}
                 {activeTab === 'diagram' && (
                     <div className="space-y-4">
                         {explanation ? (
