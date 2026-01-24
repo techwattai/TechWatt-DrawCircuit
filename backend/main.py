@@ -29,10 +29,17 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 allowed_origins = [
     "http://localhost:5173",
     "http://localhost:3000",
+    "https://techwatt-drawcircuit-production-fb0d.up.railway.app",  # Frontend URL from error
     FRONTEND_URL,
 ]
 
 # CORS
+# Check if we are in production to potentially allow all for troubleshooting
+ALLOW_ALL_ORIGINS = os.getenv("ALLOW_ALL_ORIGINS", "false").lower() == "true"
+
+if ALLOW_ALL_ORIGINS:
+    allowed_origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
