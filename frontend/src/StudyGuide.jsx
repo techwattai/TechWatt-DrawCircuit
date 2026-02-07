@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Search, X, Cpu, Zap, Activity, ArrowLeft, Download, Book, Bot, Layers, Shield } from 'lucide-react';
+import { Search, X, Cpu, Zap, Activity, ArrowLeft, Download, Book, Bot, Layers, Shield, ChevronDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 // ... imports
@@ -26,6 +26,8 @@ const StudyGuide = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeDisplayImage, setActiveDisplayImage] = useState(null);
+  const [aiModules, setAiModules] = useState([]);
+  const [expandedModuleId, setExpandedModuleId] = useState(null);
 
   useEffect(() => {
     if (selectedComponent) {
@@ -38,6 +40,18 @@ const StudyGuide = () => {
       }
     }
   }, [selectedComponent]);
+
+  useEffect(() => {
+    if (activeModule === 'ai') {
+        const fetchAI = async () => {
+            try {
+                const res = await axios.get(`${API_URL}/api/ai-courses`);
+                setAiModules(res.data);
+            } catch (err) { console.error(err); }
+        };
+        fetchAI();
+    }
+  }, [activeModule]);
 
   useEffect(() => {
     fetchComponents();
@@ -325,11 +339,84 @@ const StudyGuide = () => {
 
         {/* AI Guide View */}
         {activeModule === 'ai' && (
-            <div className="text-center py-20">
-                <Bot size={64} className="mx-auto text-purple-500 mb-6" />
-                <h2 className="text-3xl font-bold mb-4">AI Guide Coming Soon</h2>
-                <p className="text-slate-400 max-w-lg mx-auto">We are crafting a comprehensive guide to help you build smart robots. Check back later for tutorials on Computer Vision, Machine Learning, and Neural Networks.</p>
-            </div>
+          <div className="max-w-4xl mx-auto space-y-8 pb-20">
+              <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                  <div className="inline-block p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 mb-4">
+                     <Bot size={32} className="text-purple-400" />
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent mb-4">AI Robotics Curriculum</h2>
+                  <p className="text-slate-400 text-lg">Master the future of intelligent machines.</p>
+              </div>
+              
+              {aiModules.map((mod, index) => (
+                  <div key={mod.id} className="relative group animate-in fade-in slide-in-from-bottom-8 duration-700" style={{animationDelay: `${index * 100}ms`}}>
+                      {/* Connector Line */}
+                      {index !== aiModules.length - 1 && (
+                          <div className="absolute left-8 top-24 bottom-0 w-0.5 bg-gradient-to-b from-purple-500/30 to-transparent -z-10 h-full"></div>
+                      )}
+                      
+                      <div className={`bg-slate-900/80 backdrop-blur border border-slate-800 rounded-3xl overflow-hidden transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_0_30px_-10px_rgba(168,85,247,0.15)] ${expandedModuleId === mod.id ? 'ring-1 ring-purple-500/50 bg-slate-900' : ''}`}>
+                          <div 
+                            className="p-6 md:p-8 cursor-pointer flex gap-6 items-start"
+                            onClick={() => setExpandedModuleId(expandedModuleId === mod.id ? null : mod.id)}
+                          >
+                              {/* Week Badge */}
+                              <div className={`shrink-0 w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col items-center justify-center shadow-inner transition-all duration-300 group-hover:scale-105 ${expandedModuleId === mod.id ? 'border-purple-500/50 text-purple-400' : 'text-slate-500'}`}>
+                                  <span className="text-[10px] font-mono uppercase tracking-wider">Week</span>
+                                  <span className="text-2xl font-bold font-mono">{mod.week}</span>
+                              </div>
+                              
+                              <div className="flex-1 pt-1">
+                                  <h3 className={`text-2xl font-bold mb-2 transition-colors ${expandedModuleId === mod.id ? 'text-purple-400' : 'text-white group-hover:text-purple-300'}`}>{mod.title}</h3>
+                                  <p className="text-slate-400 leading-relaxed text-sm md:text-base">{mod.description}</p>
+                              </div>
+                              
+                              <div className={`p-3 rounded-full border border-slate-800 bg-slate-950 transition-transform duration-300 ${expandedModuleId === mod.id ? 'rotate-180 border-purple-500/30 text-purple-400' : 'rotate-0 text-slate-500 group-hover:text-white'}`}>
+                                  <ChevronDown size={20} />
+                              </div>
+                          </div>
+                          
+                          {/* Expanded Content */}
+                          {expandedModuleId === mod.id && (
+                              <div className="border-t border-slate-800/50 bg-slate-950/30 animate-in fade-in slide-in-from-top-2 duration-300">
+                                  <div className="p-8 pt-6">
+                                      <div className="text-slate-300 leading-relaxed text-base md:text-lg">
+                                          <ReactMarkdown
+                                            components={{
+                                                h1: ({...props}) => <h1 className="text-2xl font-bold text-purple-400 mt-6 mb-3" {...props} />,
+                                                h2: ({...props}) => <h2 className="text-xl font-bold text-purple-300 mt-5 mb-2" {...props} />,
+                                                ul: ({...props}) => <ul className="list-disc pl-6 mb-4 space-y-1 text-slate-300" {...props} />,
+                                                li: ({...props}) => <li className="marker:text-purple-500" {...props} />,
+                                                strong: ({...props}) => <strong className="font-bold text-white shadow-[0_0_10px_rgba(168,85,247,0.2)]" {...props} />,
+                                                code: ({...props}) => <code className="bg-slate-900 border border-slate-800 px-1.5 py-0.5 rounded text-purple-300 font-mono text-sm" {...props} />,
+                                            }}
+                                          >
+                                            {mod.content}
+                                          </ReactMarkdown>
+                                      </div>
+                                      
+                                      {mod.image_url && (Array.isArray(mod.image_url) ? mod.image_url.length > 0 : mod.image_url) && (
+                                          <div className="mt-8 rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl">
+                                              <img 
+                                                src={Array.isArray(mod.image_url) ? mod.image_url[0] : mod.image_url} 
+                                                alt={mod.title} 
+                                                className="w-full object-cover max-h-[400px]" 
+                                              />
+                                          </div>
+                                      )}
+                                  </div>
+                              </div>
+                          )}
+                      </div>
+                  </div>
+              ))}
+              
+              {aiModules.length === 0 && (
+                  <div className="text-center py-20 bg-slate-900/50 rounded-3xl border border-slate-800 border-dashed">
+                      <p className="text-slate-500">Curriculum is loading or empty...</p>
+                  </div>
+              )}
+          </div>
         )}
 
         {/* Other Courses View */}

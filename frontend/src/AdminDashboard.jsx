@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Search, Plus, X, Cpu, Zap, Activity, ArrowLeft, Download, Book, Bot, Layers, Trash2, LogOut, Shield, Edit } from 'lucide-react';
+import { Search, Plus, X, Cpu, Zap, Activity, ArrowLeft, Download, Book, Bot, Layers, Trash2, LogOut, Shield, Edit, FileText, List } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -34,11 +34,24 @@ const AdminDashboard = () => {
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
+  // AI Module State
+  const [view, setView] = useState('components'); // 'components', 'ai_modules'
+  const [aiModules, setAiModules] = useState([]);
+  const [newAIModule, setNewAIModule] = useState({
+    title: '',
+    week: '',
+    description: '',
+    content: '',
+    image_urls: []
+  });
+  const [editingAIModuleId, setEditingAIModuleId] = useState(null);
+
   useEffect(() => {
     if (isAuthenticated) {
-      fetchComponents();
+      if (view === 'components') fetchComponents();
+      else fetchAIModules();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, view]);
 
   useEffect(() => {
     if (search) {
@@ -71,6 +84,15 @@ const AdminDashboard = () => {
       setComponents(res.data);
     } catch (error) {
       console.error("Error fetching components:", error);
+    }
+  };
+
+  const fetchAIModules = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/api/ai-courses`);
+      setAiModules(res.data);
+    } catch (error) {
+       console.error("Error fetching AI modules", error);
     }
   };
 
@@ -201,6 +223,64 @@ const AdminDashboard = () => {
     }
   };
 
+  // AI Module Handlers
+  const handleAddAIModule = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+        const payload = {
+            title: newAIModule.title,
+            week: parseInt(newAIModule.week) || 0,
+            description: newAIModule.description,
+            content: newAIModule.content,
+            image_url: newAIModule.image_urls
+        };
+
+        if (editingAIModuleId) {
+            await axios.put(`${API_URL}/api/ai-courses/${editingAIModuleId}`, payload);
+        } else {
+            await axios.post(`${API_URL}/api/ai-courses`, payload);
+        }
+        
+        setNewAIModule({ title: '', week: '', description: '', content: '', image_urls: [] });
+        setEditingAIModuleId(null);
+        fetchAIModules();
+        navigate('/success');
+    } catch (error) {
+        console.error("Error saving AI module:", error);
+        alert("Failed to save AI module.");
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  const handleDeleteAIModule = async (id) => {
+    if (!confirm("Delete this module?")) return;
+    try {
+        await axios.delete(`${API_URL}/api/ai-courses/${id}`);
+        fetchAIModules();
+    } catch (error) {
+        console.error("Error deleting", error);
+    }
+  };
+
+  const handleEditAIModule = (mod) => {
+     setEditingAIModuleId(mod.id);
+     setNewAIModule({
+        title: mod.title,
+        week: mod.week,
+        description: mod.description,
+        content: mod.content,
+        image_urls: mod.image_url || []
+     });
+     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  const handleCancelEditAIModule = () => {
+    setEditingAIModuleId(null);
+    setNewAIModule({ title: '', week: '', description: '', content: '', image_urls: [] });
+  };
+
   // Login Screen
   if (!isAuthenticated) {
     return (
@@ -260,6 +340,20 @@ const AdminDashboard = () => {
             <Shield className="text-purple-500" /> 
             <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">TechWatt Admin</span>
           </div>
+          <div className="flex bg-slate-800 rounded-lg p-1">
+               <button 
+                  onClick={() => setView('components')}
+                  className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${view === 'components' ? 'bg-cyan-500 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+               >
+                  Components
+               </button>
+               <button 
+                  onClick={() => setView('ai_modules')}
+                  className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${view === 'ai_modules' ? 'bg-purple-500 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+               >
+                  AI Guide
+               </button>
+          </div>
           <button 
             onClick={() => setIsAuthenticated(false)}
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
@@ -270,8 +364,10 @@ const AdminDashboard = () => {
       </nav>
 
       <div className="container mx-auto px-4 py-8">
+        
+        {view === 'components' ? (
         <div className="grid lg:grid-cols-3 gap-8">
-          
+          {/* ... Components View ... */}
           {/* Add Component Column */}
           <div className="lg:col-span-1">
              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sticky top-24">
@@ -503,6 +599,120 @@ const AdminDashboard = () => {
           </div>
 
         </div>
+        ) : (
+            <div className="grid lg:grid-cols-3 gap-8">
+                 {/* AI Module Form */}
+                 <div className="lg:col-span-1">
+                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sticky top-24">
+                        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                             {editingAIModuleId ? <Edit className="text-purple-400" /> : <Plus className="text-purple-400" />} 
+                             {editingAIModuleId ? "Edit Module" : "Add AI Module"}
+                        </h2>
+                        <form onSubmit={handleAddAIModule} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-300 mb-1">Module Title</label>
+                                <input 
+                                    type="text"
+                                    required
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none"
+                                    value={newAIModule.title}
+                                    onChange={e => setNewAIModule({...newAIModule, title: e.target.value})}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-300 mb-1">Week / Order</label>
+                                <input 
+                                    type="number"
+                                    required
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none"
+                                    value={newAIModule.week}
+                                    onChange={e => setNewAIModule({...newAIModule, week: e.target.value})}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-300 mb-1">Short Description</label>
+                                <textarea 
+                                    rows={3}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none"
+                                    value={newAIModule.description}
+                                    onChange={e => setNewAIModule({...newAIModule, description: e.target.value})}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-300 mb-1 flex justify-between">
+                                    Content 
+                                    <span className="text-xs text-slate-500">Markdown</span>
+                                </label>
+                                <textarea 
+                                    rows={10}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none font-mono text-sm leading-relaxed"
+                                    value={newAIModule.content}
+                                    onChange={e => setNewAIModule({...newAIModule, content: e.target.value})}
+                                />
+                            </div>
+                            
+                            <div className="flex gap-2">
+                                {editingAIModuleId && (
+                                    <button 
+                                        type="button" 
+                                        onClick={handleCancelEditAIModule}
+                                        className="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors"
+                                    >   
+                                        Cancel
+                                    </button>
+                                )}
+                                <button 
+                                    type="submit"
+                                    disabled={loading}
+                                    className="flex-1 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-lg hover:shadow-lg transition-all"
+                                >
+                                    {loading ? "Saving..." : "Save Module"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                 </div>
+
+                 {/* AI Module List */}
+                 <div className="lg:col-span-2 space-y-6">
+                    <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl flex justify-between items-center">
+                        <h2 className="font-bold text-lg">AI Course Modules</h2>
+                        <div className="text-slate-400 text-sm">{aiModules.length} Modules</div>
+                    </div>
+                    
+                    <div className="grid gap-4">
+                        {aiModules.map(mod => (
+                            <div key={mod.id} className="bg-slate-900 border border-slate-800 rounded-xl p-6 flex gap-4 hover:border-purple-500/30 transition-colors group">
+                                <div className="w-12 h-12 bg-purple-900/20 rounded-lg flex items-center justify-center text-purple-400 shrink-0 font-bold text-xl border border-purple-500/20">
+                                    {mod.week}
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="font-bold text-white text-lg">{mod.title}</h3>
+                                    <p className="text-slate-400 text-sm mt-1 mb-2">{mod.description}</p>
+                                    <div className="text-xs text-slate-500 font-mono bg-slate-950 p-2 rounded truncate">
+                                        {mod.content ? mod.content.substring(0, 100) + '...' : 'No content'}
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                     <button 
+                                        onClick={() => handleEditAIModule(mod)}
+                                        className="p-2 text-slate-500 hover:text-purple-400 hover:bg-purple-900/10 rounded-lg transition-colors"
+                                    >
+                                        <Edit size={18} />
+                                    </button>
+                                    <button 
+                                        onClick={() => handleDeleteAIModule(mod.id)}
+                                        className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-900/10 rounded-lg transition-colors"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                 </div>
+            </div>
+        )}
       </div>
     </div>
   );
