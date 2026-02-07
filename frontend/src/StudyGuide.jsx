@@ -100,10 +100,11 @@ const StudyGuide = () => {
                 <span class="category">${comp.category}</span>
               </div>
               <div style="overflow: auto;">
-                ${comp.image_url ? `<img src="${comp.image_url}" alt="${comp.name}" />` : ''}
+                ${(comp.image_url && (Array.isArray(comp.image_url) ? comp.image_url.length > 0 : comp.image_url)) ? 
+                  `<img src="${Array.isArray(comp.image_url) ? comp.image_url[0] : comp.image_url}" alt="${comp.name}" />` : ''}
                 <div class="section">
                   <div class="section-title">How It Works</div>
-                  <p>${comp.description.replace(/\n/g, '<br>')}</p>
+                  <p>${comp.description ? comp.description.replace(/\n/g, '<br>') : ''}</p>
                 </div>
                 ${comp.wiring_guide ? `
                   <div class="section">
@@ -123,10 +124,13 @@ const StudyGuide = () => {
     printWindow.document.write(html);
     printWindow.document.close();
     printWindow.focus();
+    
+    // Allow time for images to load before printing
     setTimeout(() => {
       printWindow.print();
-      printWindow.close();
-    }, 250);
+      // We do not auto-close the window to ensure the print dialog has time to appear 
+      // and to let the user review the document if the dialog is cancelled.
+    }, 500);
   };
 
   return (
