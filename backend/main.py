@@ -138,16 +138,16 @@ class PasswordVerifyRequest(BaseModel):
 async def generate_component_details(request: ComponentGenRequest):
     try:
         prompt = f"""
-        You are an expert robotics teacher for kids. 
-        Write a fun, kid-friendly explanation for a robotics component.
+        You are an expert robotics teacher for kids and beginners. 
+        Write a COMPREHENSIVE and DETAILED guide for a robotics component.
         
         Component Name: {request.name}
         Category: {request.category}
         
         Output JSON format only:
         {{
-            "description": "A fun explanation using analogies (e.g. 'The Brain', 'The Muscle'). Use emojis.",
-            "wiring_guide": "Simple step-by-step wiring instructions for Arduino."
+            "description": "A detailed explanation in MARKDOWN format. Include:\\n\\n# 🤖 What is it?\\n(Fun analogy and simple explanation)\\n\\n# ⚙️ How it Works\\n(Technical details made simple)\\n\\n# ✨ Key Features\\n- Feature 1\\n- Feature 2\\n\\n# 🚀 Common Uses\\n- Project idea 1\\n- Project idea 2\\n\\n# ⚠️ Troubleshooting\\n- Common issue and fix",
+            "wiring_guide": "Step-by-step wiring instructions for Arduino/Microcontroller:\\n1. Connect VCC to 5V...\\n2. Connect GND to GND..."
         }}
         """
         

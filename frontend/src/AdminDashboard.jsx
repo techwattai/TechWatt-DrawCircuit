@@ -395,20 +395,26 @@ const AdminDashboard = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-1">Description</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-1 flex justify-between">
+                            Description 
+                            <span className="text-xs text-slate-500 font-normal">Markdown Supported</span>
+                        </label>
                         <textarea 
-                            rows={3}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none text-sm"
+                            rows={10}
+                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none text-sm font-mono leading-relaxed"
                             value={newComponent.description}
                             onChange={e => setNewComponent({...newComponent, description: e.target.value})}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-1">Wiring Guide</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-1 flex justify-between">
+                            Wiring Guide
+                            <span className="text-xs text-slate-500 font-normal">Markdown / Steps</span>
+                        </label>
                         <textarea 
-                            rows={3}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none font-mono text-sm"
+                            rows={6}
+                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none font-mono text-sm leading-relaxed"
                             value={newComponent.wiring_guide}
                             onChange={e => setNewComponent({...newComponent, wiring_guide: e.target.value})}
                         />

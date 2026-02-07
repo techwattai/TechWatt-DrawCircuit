@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Search, X, Cpu, Zap, Activity, ArrowLeft, Download, Book, Bot, Layers, Shield } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 // ... imports
 import kitImg from './assets/kit.jpeg';
@@ -290,8 +291,12 @@ const StudyGuide = () => {
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur opacity-20 group-hover:opacity-100 transition duration-300"></div>
                     <div className="relative h-full bg-slate-800 rounded-2xl p-6 border border-slate-700 hover:border-slate-600 transition-all flex flex-col">
                       <div className="h-48 rounded-xl bg-slate-900 mb-4 overflow-hidden flex items-center justify-center">
-                        {comp.image_url ? (
-                          <img src={comp.image_url} alt={comp.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                        {comp.image_url && (Array.isArray(comp.image_url) ? comp.image_url.length > 0 : comp.image_url) ? (
+                          <img 
+                            src={Array.isArray(comp.image_url) ? comp.image_url[0] : comp.image_url} 
+                            alt={comp.name} 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                          />
                         ) : (
                           <Cpu size={64} className="text-slate-600 group-hover:text-cyan-400 transition-colors" />
                         )}
@@ -418,13 +423,22 @@ const StudyGuide = () => {
                         <h2 className="flex items-center gap-3 text-2xl font-bold text-cyan-400 mb-6 m-0">
                           <Zap className="fill-cyan-400/20" /> How It Works
                         </h2>
-                        <div className="text-slate-300 leading-relaxed whitespace-pre-line text-base md:text-lg">
-                           {/* Simple markdown-like rendering for now, could upgrade to a real markdown parser */}
-                           {selectedComponent.description.split('\n').map((line, i) => (
-                             <p key={i} className={line.startsWith('-') ? 'pl-4 border-l-2 border-slate-600' : ''}>
-                               {line}
-                             </p>
-                           ))}
+                        <div className="text-slate-300 leading-relaxed text-base md:text-lg">
+                           <ReactMarkdown
+                             components={{
+                               h1: ({...props}) => <h1 className="text-2xl font-bold text-cyan-400 mt-6 mb-3 border-b border-slate-700 pb-2" {...props} />,
+                               h2: ({...props}) => <h2 className="text-xl font-bold text-cyan-300 mt-5 mb-2" {...props} />,
+                               h3: ({...props}) => <h3 className="text-lg font-bold text-white mt-4 mb-2" {...props} />,
+                               ul: ({...props}) => <ul className="list-disc pl-6 mb-4 space-y-1" {...props} />,
+                               ol: ({...props}) => <ol className="list-decimal pl-6 mb-4 space-y-1" {...props} />,
+                               li: ({...props}) => <li className="mb-1" {...props} />,
+                               p: ({...props}) => <p className="mb-4 leading-relaxed" {...props} />,
+                               strong: ({...props}) => <strong className="font-bold text-white" {...props} />,
+                               code: ({...props}) => <code className="bg-slate-900 px-1 py-0.5 rounded text-cyan-300 font-mono text-sm" {...props} />,
+                             }}
+                           >
+                             {selectedComponent.description}
+                           </ReactMarkdown>
                         </div>
                       </div>
 
@@ -434,10 +448,16 @@ const StudyGuide = () => {
                             <Activity className="fill-blue-400/20" /> Wiring Guide
                           </h2>
                           <div className="bg-slate-950 rounded-xl p-4 md:p-6 font-mono text-sm text-blue-200 border border-slate-800 shadow-inner overflow-x-auto">
-                            {selectedComponent.wiring_guide.split('\n').map((line, i) => (
-                               <div key={i} className="mb-2 whitespace-pre-wrap">{line}</div>
-                            ))}
+                             <ReactMarkdown components={{
+                                 ul: ({...props}) => <ul className="list-disc pl-6 space-y-2" {...props} />,
+                                 ol: ({...props}) => <ol className="list-decimal pl-6 space-y-2" {...props} />,
+                                 li: ({...props}) => <li {...props} />,
+                                 p: ({...props}) => <p className="mb-2" {...props} />
+                             }}>
+                                {selectedComponent.wiring_guide}
+                             </ReactMarkdown>
                           </div>
+
                         </div>
                       )}
                    </div>
