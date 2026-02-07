@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import ReactFlow, { 
   Controls, 
   Background, 
@@ -13,7 +14,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import axios from 'axios';
 import { 
-  Download, Cpu, Loader2, Zap, Save, Check, Clock, X, Code, FileText, LayoutTemplate, Copy
+  Download, Cpu, Loader2, Zap, Save, Check, Clock, X, Code, FileText, LayoutTemplate, Copy, Book
 } from 'lucide-react';
 import * as htmlToImage from 'html-to-image';
 
@@ -357,6 +358,9 @@ const CircuitMaker = () => {
             <button onClick={fetchHistory} className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg text-sm font-medium transition-colors border border-gray-200 lg:mr-2">
                 <Clock size={16} /> <span className="hidden sm:inline">Recent</span>
             </button>
+            <Link to="/study" className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg text-sm font-medium transition-colors border border-gray-200 lg:mr-2">
+                <Book size={16} /> <span className="hidden sm:inline">Guide</span>
+            </Link>
             
             {shareUrl && (
                 <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1 rounded text-sm border border-green-200">

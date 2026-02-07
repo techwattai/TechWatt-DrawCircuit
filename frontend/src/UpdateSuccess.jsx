@@ -37,7 +37,7 @@ const UpdateSuccess = () => {
                 to="/study" 
                 className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold rounded-xl shadow-lg transition-all"
             >
-                View in Study Guide
+                View Guide / AI Course
             </Link>
         </div>
 

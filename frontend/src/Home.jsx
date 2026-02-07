@@ -36,6 +36,7 @@ const Home = () => {
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
+              <a href="#ai-course" className="text-gray-600 hover:text-purple-600 transition-colors">AI Course</a>
               <Link to="/study" className="text-gray-600 hover:text-blue-600 transition-colors">Study Guide</Link>
               <Link to="/app" className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20">
                 Launch App
@@ -51,12 +52,11 @@ const Home = () => {
           <Zap size={16} fill="currentColor" /> AI-Powered Circuit Design
         </div>
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 mb-6">
-          Design Circuits at the <br />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500">Speed of Thought</span>
+          Build Circuits & <br />
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">Master AI</span>
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Describe your idea in plain English and let AI generate the professional wiring diagram, 
-          Arduino code, and component cost estimate instantly.
+          The ultimate platform for young innovators. Design circuits instantly with AI and master Artificial Intelligence with our <strong>Tech Watt AI for Kids</strong> curriculum.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link to="/app" className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/30">
@@ -93,7 +93,7 @@ const Home = () => {
             <p className="text-gray-600 max-w-xl mx-auto">From concept to code, TechWatt handles the heavy lifting so you can focus on innovation.</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-4 gap-8">
             <FeatureCard 
               icon={<Cpu className="text-blue-600" size={32} />}
               title="Intelligent Diagrams"
@@ -109,7 +109,74 @@ const Home = () => {
               title="Instant BOM & Cost"
               desc="Get a detailed Bill of Materials with real-time market price estimations for every component."
             />
+            <FeatureCard 
+              icon={<Zap className="text-yellow-500" size={32} />}
+              title="AI for Kids Course"
+              desc="A complete 8-week curriculum to teach kids AI concepts, prompting, and ethical use."
+            />
           </div>
+        </div>
+      </section>
+
+      {/* AI Course Section */}
+      <section id="ai-course" className="py-20 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-purple-50 skew-x-12 opacity-50 z-0"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="flex flex-col md:flex-row items-center gap-12">
+                <div className="flex-1">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-bold mb-6">
+                        <Zap size={14} /> New Curriculum
+                    </div>
+                    <h2 className="text-4xl font-extrabold text-gray-900 mb-6">Tech Watt AI for Kids</h2>
+                    <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                        Empower the next generation with our structured 8-week AI course. From understanding "What is AI?" to building their own AI-powered study assistants, we guide students through the future of technology responsibly.
+                    </p>
+                    <ul className="space-y-3 mb-8">
+                        <li className="flex items-center gap-3 text-gray-700">
+                            <span className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs font-bold">✓</span>
+                            Master Prompt Engineering
+                        </li>
+                        <li className="flex items-center gap-3 text-gray-700">
+                            <span className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs font-bold">✓</span>
+                            Use Tools like ChatGPT & Teachable Machine
+                        </li>
+                        <li className="flex items-center gap-3 text-gray-700">
+                            <span className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs font-bold">✓</span>
+                            Build Real-World AI Projects
+                        </li>
+                    </ul>
+                    <Link to="/study" className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-colors shadow-lg shadow-purple-600/20">
+                        Start Learning Now <ArrowRight size={18} />
+                    </Link>
+                </div>
+                <div className="flex-1">
+                    <div className="bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-800 rotate-2 hover:rotate-0 transition-transform duration-500">
+                        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                            <div className="flex items-center gap-4 mb-6 border-b border-gray-700 pb-4">
+                                <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-xl">01</div>
+                                <div>
+                                    <div className="text-white font-bold text-lg">Week 1: World of AI</div>
+                                    <div className="text-gray-400 text-sm">Introduction & Basics</div>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4 mb-6 border-b border-gray-700 pb-4">
+                                <div className="w-12 h-12 rounded-lg bg-pink-500/20 flex items-center justify-center text-pink-400 font-bold text-xl">02</div>
+                                <div>
+                                    <div className="text-white font-bold text-lg">Week 2: Machine Learning</div>
+                                    <div className="text-gray-400 text-sm">Training Models</div>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xl">...</div>
+                                <div>
+                                    <div className="text-white font-bold text-lg">8 Weeks of Content</div>
+                                    <div className="text-gray-400 text-sm">Full Interactive Guide</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
       </section>
 
